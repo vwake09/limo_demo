@@ -17,12 +17,6 @@ Financial professionals, accountants, and business owners regularly need to:
 - Perform calculations and financial ratio analysis
 - Answer ad-hoc questions about financial data without manual spreadsheet manipulation
 
-**Traditional approaches are slow and error-prone:**
-- ❌ Manual data entry and calculations
-- ❌ Complex Excel formulas that break easily
-- ❌ Time-consuming searches through large spreadsheets
-- ❌ Need for technical knowledge to query data
-- ❌ Difficulty handling multi-period comparisons
 
 ### The Solution
 This AI Accountant Chatbot revolutionizes financial data analysis by:
