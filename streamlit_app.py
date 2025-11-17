@@ -14,7 +14,13 @@ import io
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 
 # ==================== CONFIGURATION ====================
-GEMINI_API_KEY = "AIzaSyCl7QMnjE1DduohpQr4gf1O1POF82JxdBg"
+# Get API key from Streamlit secrets
+try:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+except KeyError:
+    st.error("⚠️ GEMINI_API_KEY not found in secrets. Please configure it in Streamlit Cloud settings.")
+    st.stop()
+
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 # ==================== PYDANTIC SCHEMAS ====================
