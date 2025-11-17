@@ -14,23 +14,14 @@ import io
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 
 # ==================== CONFIGURATION ====================
-# Initialize client as None - will be set up in main()
-client = None
+# Get API key from Streamlit secrets
+try:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+except KeyError:
+    st.error("⚠️ GEMINI_API_KEY not found in secrets. Please configure it in Streamlit Cloud settings.")
+    st.stop()
 
-def get_gemini_client():
-    """Get or initialize Gemini client with API key from secrets"""
-    global client
-    if client is None:
-        try:
-            GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-            client = genai.Client(api_key=GEMINI_API_KEY)
-        except KeyError:
-            st.error("⚠️ GEMINI_API_KEY not found in secrets. Please configure it in Streamlit Cloud settings.")
-            st.stop()
-        except Exception as e:
-            st.error(f"⚠️ Error initializing Gemini client: {str(e)}")
-            st.stop()
-    return client
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 # ==================== PYDANTIC SCHEMAS ====================
 class StatementIdentification(BaseModel):
