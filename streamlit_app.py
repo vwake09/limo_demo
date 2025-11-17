@@ -14,14 +14,23 @@ import io
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 
 # ==================== CONFIGURATION ====================
-# Get API key from Streamlit secrets
-try:
-    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-except KeyError:
-    st.error("⚠️ GEMINI_API_KEY not found in secrets. Please configure it in Streamlit Cloud settings.")
-    st.stop()
+# Initialize client as None - will be set up in main()
+client = None
 
-client = genai.Client(api_key=GEMINI_API_KEY)
+def get_gemini_client():
+    """Get or initialize Gemini client with API key from secrets"""
+    global client
+    if client is None:
+        try:
+            GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+            client = genai.Client(api_key=GEMINI_API_KEY)
+        except KeyError:
+            st.error("⚠️ GEMINI_API_KEY not found in secrets. Please configure it in Streamlit Cloud settings.")
+            st.stop()
+        except Exception as e:
+            st.error(f"⚠️ Error initializing Gemini client: {str(e)}")
+            st.stop()
+    return client
 
 # ==================== PYDANTIC SCHEMAS ====================
 class StatementIdentification(BaseModel):
@@ -132,7 +141,7 @@ Provide:
 
 Return your analysis as JSON."""
 
-    response = client.models.generate_content(
+    response = get_gemini_client().models.generate_content(
         model="gemini-2.5-pro",
         contents=prompt,
         config=types.GenerateContentConfig(
@@ -176,7 +185,7 @@ For line items:
 
 Return as JSON."""
 
-    response = client.models.generate_content(
+    response = get_gemini_client().models.generate_content(
         model="gemini-2.5-pro",
         contents=prompt,
         config=types.GenerateContentConfig(
@@ -226,7 +235,7 @@ Create THREE LineItem objects:
 
 Return as JSON."""
 
-    response = client.models.generate_content(
+    response = get_gemini_client().models.generate_content(
         model="gemini-2.5-pro",
         contents=prompt,
         config=types.GenerateContentConfig(
@@ -336,7 +345,7 @@ if data.get('has_bs'):
 
 Generate and execute code to answer the question, then provide a clear summary."""
 
-    response = client.models.generate_content(
+    response = get_gemini_client().models.generate_content(
         model="gemini-2.5-pro",
         contents=prompt,
         config=types.GenerateContentConfig(
